@@ -1,0 +1,16 @@
+{
+  "name": "pull-bundle",
+  "module": "main.ts",
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/debug": "^4.1.12",
+    "bun-bagel": "^1.0.9"
+  },
+  "peerDependencies": {
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "debug": "^4.3.6"
+  }
+}
