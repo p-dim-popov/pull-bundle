@@ -14,10 +14,10 @@ test("extracts js scripts or sources from html", () => {
     <script>
     </script>
 `;
-  const contentsAndSources = resolveHtml(html);
+  const contentsAndSources = resolveHtml(html, 'https://example.com');
 
   expect(contentsAndSources).toEqual([
-    { src: "https://cdn.com/script.js" },
-    '\n      console.log(\"Hello, world!\");\n    ',
+    { uri: "https://cdn.com/script.js" },
+    { uri: 'https://example.com#root-1', content: '\n      console.log("Hello, world!");\n    ' },
   ]);
 });

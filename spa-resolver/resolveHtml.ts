@@ -1,4 +1,7 @@
-export type ContentOrSource = string | { src: string };
+import type { JsScript, JsSource } from "./types";
+import path from "path";
+
+export type ResolvedJsOrSource = JsScript | JsSource;
 
 /**
  * @description Resolves HTML to array of scripts contents or scripts sources.
@@ -19,21 +22,27 @@ export type ContentOrSource = string | { src: string };
  * ]
  * ```
  */
-export const resolveHtml = (html: string): ContentOrSource[] => {
+export const resolveHtml = (
+  html: string,
+  uri: string,
+): ResolvedJsOrSource[] => {
   const rewriter = new HTMLRewriter();
 
-  const contentsAndSources: ContentOrSource[] = [];
+  const contentsAndSources: ResolvedJsOrSource[] = [];
   rewriter
     .on("script", {
       element: (element: HTMLRewriterTypes.Element): void | Promise<void> => {
         const src = element.getAttribute("src");
         if (src) {
-          contentsAndSources.push({ src });
+          contentsAndSources.push({ uri: src.match(/^https?:\/\/.+/i) ? src : path.join(uri, src) });
         }
       },
       text({ text }) {
         if (text.trim().length > 0) {
-          contentsAndSources.push(text);
+          contentsAndSources.push({
+            uri: uri + `#root-${contentsAndSources.length}`,
+            content: text,
+          });
         }
       },
     })
